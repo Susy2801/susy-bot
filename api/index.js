@@ -31,6 +31,25 @@ const keyboard = {
         { text: "DuckCoop 🦆", callback_data: "duckcoop" },
         { text: "PirateFrenzy 🐳", callback_data: "frenzy" },
       ],
+      [
+        {
+          text: "Văn mẫu BD",
+          callback_data: "bd",
+        },
+      ],
+    ],
+  },
+};
+
+const example = {
+  reply_markup: {
+    inline_keyboard: [
+      [
+        {
+          text: "Văn mẫu DuckCoop",
+          callback_data: "ex1",
+        },
+      ],
     ],
   },
 };
@@ -57,6 +76,43 @@ let duckcoopKeywordRequest = false;
 let pokeyquestKeywordRequest = false;
 let frenzyKeywordRequest = false;
 
+// BD action
+const exm1 = `Your Benefits:
+
+1. We have a private pool specifically for KOLs. We will give you the allocation of 0,1% of total supply, equivalent to $1,000 when our Market cap reaches 1M. As a guarantee, if our MC can't reach 1M within 3 weeks, we will compensate you $1,000 in fiat
+
+2. Your Twitter will be featured in our bot as our Ambassador, boosting your social presence. We guarantee that you'll gain 10k followers within 24 hours.
+
+3. We will also send you 500,000 $DUCKS as an additional incentives. Currently we are working with top-tier CEXs to prepare listing plan. We've already announced about our partnership with Gate, MEXC, OKX and Bitget
+At the moment, $DUCKS can be used to participate in Launch pool and staked for $DUMP - an already listed token in our ecosystem.
+
+Our Requirements:
+
+You have to stick with the project and our content plan. Including: 3 posts + 4 RT + 3 QT per month
+First, in this week, we need:
+- 1 intro post about the project which educate new users to our app
+- 2 QT about the updating features of project
+- 1 call post when listing (the listing is scheduled for next week)`;
+
+bot.action("bd", (ctx) => {
+  ctx.answerCbQuery();
+  ctx.replyWithPhoto(
+    {
+      url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVdVF09toliZ663zV_J0CTRfTn99LKLgAW4g&s",
+    },
+    {
+      caption: "Lựa chọn văn mẫu 👇",
+      reply_markup: example.reply_markup,
+    }
+  );
+});
+
+bot.action("ex1", (ctx) => {
+  ctx.answerCbQuery();
+  ctx.reply(exm1);
+});
+
+// Referral Action
 bot.action("duckcoop", (ctx) => {
   ctx.answerCbQuery();
   duckcoopKeywordRequest = true;
