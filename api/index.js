@@ -42,22 +42,6 @@ const keyboard = {
   },
 };
 
-// Đường dẫn tệp lưu trữ user ID
-const usersFilePath = "users.json";
-
-// Đọc danh sách User ID từ tệp
-const readUserIds = () => {
-  if (fs.existsSync(usersFilePath)) {
-    return JSON.parse(fs.readFileSync(usersFilePath));
-  }
-  return [];
-};
-
-// Ghi danh sách User ID vào tệp
-const writeUserIds = (userIds) => {
-  fs.writeFileSync(usersFilePath, JSON.stringify(userIds));
-};
-
 bot.start((ctx) => {
   const userId = ctx.chat.id;
   let userIds = readUserIds();
@@ -75,24 +59,6 @@ bot.start((ctx) => {
       reply_markup: keyboard.reply_markup,
     }
   );
-});
-// Ví dụ gửi thông báo khi bot nhận lệnh /notify
-// Hàm gửi thông báo tới tất cả người dùng
-const sendNotificationToAllUsers = async (message) => {
-  const userIds = readUserIds();
-  for (const userId of userIds) {
-    try {
-      await bot.telegram.sendMessage(userId, message);
-    } catch (error) {
-      console.error(`Failed to send message to ${userId}:`, error);
-    }
-  }
-};
-
-bot.command("notify", (ctx) => {
-  const message = "This is a notification to all users!";
-  sendNotificationToAllUsers(message);
-  ctx.reply("Notification sent to all users.");
 });
 
 bot.help((ctx) => ctx.reply("Send me a sticker"));
