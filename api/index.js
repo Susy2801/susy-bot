@@ -25,12 +25,12 @@ const keyboard = {
     inline_keyboard: [
       [
         {
-          text: "Check PokeyQuest Referral 🐲",
+          text: "PokeyQuest 🐲",
           callback_data: "pokeyquest",
         },
-        { text: "Check DuckCoop Referral 🦆", callback_data: "duckcoop" },
+        { text: "DuckCoop 🦆", callback_data: "duckcoop" },
+        { text: "PirateFrenzy 🐳", callback_data: "frenzy" },
       ],
-      [{ text: "Check PirateFrenzy Referral 🐳", callback_data: "frenzy" }],
     ],
   },
 };
@@ -42,7 +42,7 @@ bot.start((ctx) => {
     },
     {
       caption:
-        "Welcome to Susy's bot! 🌸\n\nWe're thrilled to have you here. Click the buttons below to start exploring right away.\n\nHave a wonderful time with Susy's bot! 😊",
+        "Welcome to Susy's bot! 🌸\n\nWe're thrilled to have you here\nFree version is released now!\n\nCheck your referral code hear 👇👇👇",
       reply_markup: keyboard.reply_markup,
     }
   );
@@ -90,7 +90,7 @@ bot.on("text", async (ctx) => {
       const message = `👤 User_name: ${result.data[0].full_name}\n\n🃏 Total_Ref: ${result.data[0].total_ref}`;
       ctx.replyWithPhoto(
         {
-          url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_Id2yspKq-rr6CQ_G8Sl60rmUI5s55SA9nA&s",
+          url: "https://images.alphacoders.com/134/thumb-1920-1345286.png",
         },
         {
           caption: message,
@@ -139,7 +139,7 @@ bot.on("text", async (ctx) => {
       const message = `👤 User_name: ${result.data[0].full_name}\n\n🃏 Total_Ref: ${result.data[0].total_ref}`;
       ctx.replyWithPhoto(
         {
-          url: "https://pbs.twimg.com/media/GTJU09aaIAAk1gI?format=jpg&name=large",
+          url: "https://img.freepik.com/premium-photo/anime-girl-standing-water-with-fish-fish-background-generative-ai_958165-27986.jpg",
         },
         {
           caption: message,
