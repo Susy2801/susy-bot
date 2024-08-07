@@ -81,6 +81,15 @@ First, in this week, we need:
 - 2 QT about the updating features of project
 - 1 call post when listing (the listing is scheduled for next week)`;
 
+const exm2 = `About DuckCoop:
+:duck: $DUCKS - Just a funny meme to give a quacking shoutout to Telegram flock. Airdrop incoming for all Telegram duckies! :parachute:
+• Total Users: 3.9M+
+• Daily Active Users (DAU): 800K+
+• Channel Subscribers: 1.9M+
+• Telegram Channel: https://t.me/duckcoopchannel
+• Bot: https://t.me/duckscoop_bot
+• Twitter: https://x.com/DuckCoop_TG`;
+
 const example = {
   reply_markup: {
     inline_keyboard: [
@@ -112,6 +121,12 @@ const duck_bd = {
     inline_keyboard: [
       [
         {
+          text: "Introduction",
+          callback_data: "duck_bd_intro",
+        },
+      ],
+      [
+        {
           text: "Ambassador",
           callback_data: "duck_bd_amb",
         },
@@ -133,6 +148,10 @@ bot.action("duck_bd", (ctx) => {
   );
 });
 
+bot.action("duck_bd_intro", (ctx) => {
+  ctx.answerCbQuery();
+  ctx.reply(exm2);
+});
 bot.action("duck_bd_amb", (ctx) => {
   ctx.answerCbQuery();
   ctx.reply(exm1);
