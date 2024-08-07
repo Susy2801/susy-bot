@@ -6,7 +6,6 @@ const { Telegraf, Markup } = require("telegraf");
 const axios = require("axios");
 const rga = require("random-gif-api");
 const { message } = require("telegram/client");
-const fs = require("fs");
 const app = express();
 // Định dạng
 app.use(
@@ -43,12 +42,6 @@ const keyboard = {
 };
 
 bot.start((ctx) => {
-  const userId = ctx.chat.id;
-  let userIds = readUserIds();
-  if (!userIds.includes(userId)) {
-    userIds.push(userId);
-    writeUserIds(userIds);
-  }
   ctx.replyWithPhoto(
     {
       url: "https://png.pngtree.com/thumb_back/fw800/background/20230610/pngtree-anime-anime-girl-by-kyuuya-yoshito-and-her-three-friends-image_2951481.jpg",
