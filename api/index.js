@@ -77,6 +77,18 @@ bot.start((ctx) => {
   );
 });
 // Ví dụ gửi thông báo khi bot nhận lệnh /notify
+// Hàm gửi thông báo tới tất cả người dùng
+const sendNotificationToAllUsers = async (message) => {
+  const userIds = readUserIds();
+  for (const userId of userIds) {
+    try {
+      await bot.telegram.sendMessage(userId, message);
+    } catch (error) {
+      console.error(`Failed to send message to ${userId}:`, error);
+    }
+  }
+};
+
 bot.command("notify", (ctx) => {
   const message = "This is a notification to all users!";
   sendNotificationToAllUsers(message);
