@@ -6,6 +6,7 @@ const { Telegraf, Markup } = require("telegraf");
 const axios = require("axios");
 const rga = require("random-gif-api");
 const { message } = require("telegram/client");
+const fs = require("fs");
 const app = express();
 // Định dạng
 app.use(
