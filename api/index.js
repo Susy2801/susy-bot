@@ -41,7 +41,29 @@ const keyboard = {
   },
 };
 
+// Đường dẫn tệp lưu trữ user ID
+const usersFilePath = "users.json";
+
+// Đọc danh sách User ID từ tệp
+const readUserIds = () => {
+  if (fs.existsSync(usersFilePath)) {
+    return JSON.parse(fs.readFileSync(usersFilePath));
+  }
+  return [];
+};
+
+// Ghi danh sách User ID vào tệp
+const writeUserIds = (userIds) => {
+  fs.writeFileSync(usersFilePath, JSON.stringify(userIds));
+};
+
 bot.start((ctx) => {
+  const userId = ctx.chat.id;
+  let userIds = readUserIds();
+  if (!userIds.includes(userId)) {
+    userIds.push(userId);
+    writeUserIds(userIds);
+  }
   ctx.replyWithPhoto(
     {
       url: "https://png.pngtree.com/thumb_back/fw800/background/20230610/pngtree-anime-anime-girl-by-kyuuya-yoshito-and-her-three-friends-image_2951481.jpg",
@@ -52,6 +74,12 @@ bot.start((ctx) => {
       reply_markup: keyboard.reply_markup,
     }
   );
+});
+// Ví dụ gửi thông báo khi bot nhận lệnh /notify
+bot.command("notify", (ctx) => {
+  const message = "This is a notification to all users!";
+  sendNotificationToAllUsers(message);
+  ctx.reply("Notification sent to all users.");
 });
 
 bot.help((ctx) => ctx.reply("Send me a sticker"));
