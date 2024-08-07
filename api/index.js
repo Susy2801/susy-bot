@@ -15,7 +15,7 @@ app.use(
 );
 app.use(express.json());
 
-const botToken = process.env.BOT_TOKEN; // Thay thế bằng token của bạn
+const botToken = process.env.BOT_TOKEN;
 const serverURL = process.env.SERVER_URL;
 const bot = new Telegraf(botToken);
 console.log("Bot is running...");
@@ -35,19 +35,6 @@ const keyboard = {
         {
           text: "Văn mẫu BD",
           callback_data: "bd",
-        },
-      ],
-    ],
-  },
-};
-
-const example = {
-  reply_markup: {
-    inline_keyboard: [
-      [
-        {
-          text: "Văn mẫu DuckCoop",
-          callback_data: "ex1",
         },
       ],
     ],
@@ -94,6 +81,19 @@ First, in this week, we need:
 - 2 QT about the updating features of project
 - 1 call post when listing (the listing is scheduled for next week)`;
 
+const example = {
+  reply_markup: {
+    inline_keyboard: [
+      [
+        {
+          text: "Văn mẫu DuckCoop",
+          callback_data: "duck_bd",
+        },
+      ],
+    ],
+  },
+};
+
 bot.action("bd", (ctx) => {
   ctx.answerCbQuery();
   ctx.replyWithPhoto(
@@ -107,7 +107,33 @@ bot.action("bd", (ctx) => {
   );
 });
 
-bot.action("ex1", (ctx) => {
+const duck_bd = {
+  reply_markup: {
+    inline_keyboard: [
+      [
+        {
+          text: "Ambassador",
+          callback_data: "duck_bd_amb",
+        },
+      ],
+    ],
+  },
+};
+
+bot.action("duck_bd", (ctx) => {
+  ctx.answerCbQuery();
+  ctx.replyWithPhoto(
+    {
+      url: "https://airdropalert.com/wp-content/uploads/2024/07/Duck-Airdrop.jpeg",
+    },
+    {
+      caption: "Lựa đê",
+      reply_markup: duck_bd.reply_markup,
+    }
+  );
+});
+
+bot.action("duck_bd_amb", (ctx) => {
   ctx.answerCbQuery();
   ctx.reply(exm1);
 });
