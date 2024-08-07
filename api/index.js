@@ -106,8 +106,7 @@ bot.on("text", async (ctx) => {
     const config = {
       method: "POST",
       headers: {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJ0aW1lc3RhbXAiOjE3MjIyMjY3NDYwODEsInR5cGUiOjEsImlhdCI6MTcyMjIyNjc0NiwiZXhwIjoxNzIyODMxNTQ2fQ.lrEjVEa3kWjL1UDMfymjrFDneiyq6JSSeJRbm56crCk",
+        Authorization: process.env.KEY,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ link_ref: [ctx.message.text] }),
