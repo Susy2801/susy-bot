@@ -103,8 +103,8 @@ const example = {
   },
 };
 
-bot.action("bd", (ctx) => {
-  ctx.answerCbQuery();
+bot.action("bd", async (ctx) => {
+  await ctx.answerCbQuery();
   ctx.replyWithPhoto(
     {
       url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVdVF09toliZ663zV_J0CTRfTn99LKLgAW4g&s",
@@ -135,8 +135,8 @@ const duck_bd = {
   },
 };
 
-bot.action("duck_bd", (ctx) => {
-  ctx.answerCbQuery();
+bot.action("duck_bd", async (ctx) => {
+  await ctx.answerCbQuery();
   ctx.replyWithPhoto(
     {
       url: "https://airdropalert.com/wp-content/uploads/2024/07/Duck-Airdrop.jpeg",
@@ -148,32 +148,32 @@ bot.action("duck_bd", (ctx) => {
   );
 });
 
-bot.action("duck_bd_intro", (ctx) => {
-  ctx.answerCbQuery();
+bot.action("duck_bd_intro", async (ctx) => {
+  await ctx.answerCbQuery();
   ctx.reply(exm2);
 });
-bot.action("duck_bd_amb", (ctx) => {
-  ctx.answerCbQuery();
+bot.action("duck_bd_amb", async (ctx) => {
+  await ctx.answerCbQuery();
   ctx.reply(exm1);
 });
 
 // Referral Action
-bot.action("duckcoop", (ctx) => {
-  ctx.answerCbQuery();
+bot.action("duckcoop", async (ctx) => {
+  await ctx.answerCbQuery();
   duckcoopKeywordRequest = true;
   pokeyquestKeywordRequest = false; // Ensure only one request type is active
   ctx.reply("Please enter the DuckCoop referral code:");
 });
 
-bot.action("pokeyquest", (ctx) => {
-  ctx.answerCbQuery();
+bot.action("pokeyquest", async (ctx) => {
+  await ctx.answerCbQuery();
   pokeyquestKeywordRequest = true;
   duckcoopKeywordRequest = false; // Ensure only one request type is active
   ctx.reply("Please enter the PokeyQuest referral code:");
 });
 
-bot.action("frenzy", (ctx) => {
-  ctx.answerCbQuery();
+bot.action("frenzy", async (ctx) => {
+  await ctx.answerCbQuery();
   pokeyquestKeywordRequest = false;
   duckcoopKeywordRequest = false; // Ensure only one request type is active
   frenzyKeywordRequest = true;
@@ -254,17 +254,17 @@ bot.on("text", async (ctx) => {
   }
 });
 
-const setWebhook = async () => {
-  const url = `https://api.telegram.org/bot${botToken}/setWebhook?url=${serverURL}`;
-  try {
-    const response = await axios.get(url);
-    console.log("Webhook set:", response.data);
-  } catch (error) {
-    console.error("Error setting webhook:", error);
-  }
-};
+// const setWebhook = async () => {
+//   const url = `https://api.telegram.org/bot${botToken}/setWebhook?url=${serverURL}`;
+//   try {
+//     const response = await axios.get(url);
+//     console.log("Webhook set:", response.data);
+//   } catch (error) {
+//     console.error("Error setting webhook:", error);
+//   }
+// };
 
-setWebhook();
+// setWebhook();
 console.log("Webhook ready....");
 
 app.post("/", (req, res) => {
