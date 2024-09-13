@@ -15,7 +15,7 @@ app.use(
 app.use(express.json());
 
 const botToken = process.env.BOT_TOKEN;
-// const botToken = process.env.BOT_TOKEN;
+
 const serverURL = process.env.SERVER_URL;
 const bot = new Telegraf(botToken);
 console.log("Bot is running...");
@@ -30,6 +30,12 @@ const keyboard = {
         },
         { text: "DuckCoop 🦆", callback_data: "duckcoop" },
         { text: "PirateFrenzy 🐳", callback_data: "frenzy" },
+      ],
+      [
+        {
+          text: "PoolAM",
+          callback_data: "PoolAM",
+        },
       ],
     ],
   },
@@ -56,8 +62,14 @@ bot.hears("help", (ctx) => {
 let duckcoopKeywordRequest = false;
 let pokeyquestKeywordRequest = false;
 let frenzyKeywordRequest = false;
-
+let poolamKeywordRequest = false;
 // Referral Action
+bot.action("PoolAM", (ctx) => {
+  ctx.answerCbQuery();
+  poolamKeywordRequest = true;
+  duckcoopKeywordRequest = false;
+  ctx.reply("Please enter the PoolAM referral code:");
+});
 bot.action("duckcoop", async (ctx) => {
   await ctx.answerCbQuery();
   duckcoopKeywordRequest = true;
@@ -82,22 +94,27 @@ bot.action("frenzy", async (ctx) => {
 
 bot.on("text", async (ctx) => {
   if (duckcoopKeywordRequest) {
-    const url = `https://api.duckcoop.xyz/user/get-ref-count?ref_code[]=${ctx.message.text}`;
+    const url = `https://api.apiduck.xyz/user/get-ref-count?ref_code[]=${ctx.message.text}`;
 
     duckcoopKeywordRequest = false;
     try {
       const data = await fetch(url);
       const result = await data.json();
-      const message = `👤 User_name: ${result.data[0].full_name}\n\n🃏 Total_Ref: ${result.data[0].total_ref}`;
-      ctx.replyWithPhoto(
-        {
-          url: "https://images.alphacoders.com/134/thumb-1920-1345286.png",
-        },
-        {
-          caption: message,
-          reply_markup: keyboard.reply_markup,
+      const dataArray = result.data[0];
+      dataArray.map((data, index) => {
+        if (index == 0) {
+          const message = `👤 User_name: ${data.full_name}\n\n🃏 Total_Ref: ${data.total_ref}`;
+          ctx.replyWithPhoto(
+            {
+              url: "https://images.alphacoders.com/134/thumb-1920-1345286.png",
+            },
+            {
+              caption: message,
+              reply_markup: keyboard.reply_markup,
+            }
+          );
         }
-      );
+      });
     } catch (error) {
       console.log(error);
       ctx.reply("Sorry, an error occurred while fetching the referral data.");
@@ -161,6 +178,33 @@ bot.on("text", async (ctx) => {
       );
     } catch (error) {
       console.log(error);
+      ctx.reply("Sorry, an error occurred while fetching the referral data.");
+    }
+  } else if (poolamKeywordRequest) {
+    const url = `https://api.poolam.xyz/user/get-ref-count?ref_code[]=${ctx.message.text}`;
+    poolamKeywordRequest = false;
+    try {
+      const data = await fetch(url);
+      const result = await data.json();
+      const test = result.data[0];
+      test.map((a, index) => {
+        if (index == 0) {
+          console.log(a.full_name);
+          const message = `👤 User_name: ${a.full_name}\n\n🃏 Total_Ref: ${a.total_ref}`;
+          ctx.replyWithPhoto(
+            {
+              url: "https://img.freepik.com/premium-photo/anime-girl-standing-water-with-fish-fish-background-generative-ai_958165-27986.jpg",
+            },
+            {
+              caption: message,
+              reply_markup: keyboard.reply_markup,
+            }
+          );
+        }
+      });
+      // const message = `👤 User_name: ${result.data[0].full_name}\n\n🃏 Total_Ref: ${result.data[0].total_ref}`;
+    } catch (error) {
+      console.log(`PoolAM erro: ${error}`);
       ctx.reply("Sorry, an error occurred while fetching the referral data.");
     }
   }
