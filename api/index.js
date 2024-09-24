@@ -7,7 +7,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const botToken = "6333064218:AAGDsqP8nsHJMDjS7H4B_AIxFZCFfpQVPww";
+const botToken = process.env.BOT_TOKEN;
 const bot = new Telegraf(botToken);
 console.log("Bot is running...");
 
