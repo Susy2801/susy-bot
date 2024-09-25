@@ -7,7 +7,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const botToken = process.env.BOT_TOKEN;
+const botToken = "6333064218:AAGDsqP8nsHJMDjS7H4B_AIxFZCFfpQVPww";
 const bot = new Telegraf(botToken);
 console.log("Bot is running...");
 
@@ -121,6 +121,7 @@ const handleActions = (type, ctx) => {
 // Xử lí theo case
 let duckcoopAll = false;
 let duckcoopByDate = false;
+let frenzy = false;
 
 // Hành động tương ứng với mỗi lựa chọn
 bot.action("duckcoopAll", (ctx) => {
@@ -133,7 +134,12 @@ bot.action("duckcoop", (ctx) => {
   duckcoopByDate = true;
   duckcoopAll = false;
 });
-bot.action("frenzy", (ctx) => handleActions("PirateFrenzy", ctx));
+bot.action("frenzy", (ctx) => {
+  handleActions("PirateFrenzy", ctx);
+  frenzy = true;
+  duckcoopByDate = false;
+  duckcoopAll = false;
+});
 
 // Lệnh reset để hủy yêu cầu đang nhập dở
 bot.command("reset", (ctx) => {
@@ -211,6 +217,26 @@ bot.on("text", async (ctx) => {
           );
         }
       });
+    } catch (error) {
+      console.log(error);
+      ctx.reply("Sorry, an error occurred while fetching the referral data.");
+    }
+  } else if (frenzy) {
+    const url = `https://api-minigame-prod.piratebattle.xyz/user/get-ref-count?ref_code[]=${ctx.message.text}`;
+    frenzy = false;
+    try {
+      const data = await fetch(url);
+      const result = await data.json();
+      const message = `👤 User_name: ${result.data[0].full_name}\n\n🃏 Total_Ref: ${result.data[0].total_ref}`;
+      ctx.replyWithPhoto(
+        {
+          url: "https://img.freepik.com/premium-photo/anime-girl-standing-water-with-fish-fish-background-generative-ai_958165-27986.jpg",
+        },
+        {
+          caption: message,
+          reply_markup: keyboard.reply_markup,
+        }
+      );
     } catch (error) {
       console.log(error);
       ctx.reply("Sorry, an error occurred while fetching the referral data.");
