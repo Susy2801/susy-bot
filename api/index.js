@@ -20,6 +20,7 @@ const keyboard = {
         { text: "Duck by Date 🦆", callback_data: "duckcoop" },
       ],
       [{ text: "Pirate Frenzy 🐳", callback_data: "frenzy" }],
+      [{ text: "🔞 Duck for real 🔞", callback_data: "realDuck" }],
     ],
   },
 };
@@ -122,6 +123,7 @@ const handleActions = (type, ctx) => {
 let duckcoopAll = false;
 let duckcoopByDate = false;
 let frenzy = false;
+let realDuck = false;
 
 // Hành động tương ứng với mỗi lựa chọn
 bot.action("duckcoopAll", (ctx) => {
@@ -139,6 +141,13 @@ bot.action("frenzy", (ctx) => {
   frenzy = true;
   duckcoopByDate = false;
   duckcoopAll = false;
+});
+bot.action("realDuck", (ctx) => {
+  handleActions("Real Duck", ctx);
+  frenzy = false;
+  duckcoopByDate = false;
+  duckcoopAll = false;
+  realDuck = true;
 });
 
 // Lệnh reset để hủy yêu cầu đang nhập dở
@@ -231,6 +240,26 @@ bot.on("text", async (ctx) => {
       ctx.replyWithPhoto(
         {
           url: "https://img.freepik.com/premium-photo/anime-girl-standing-water-with-fish-fish-background-generative-ai_958165-27986.jpg",
+        },
+        {
+          caption: message,
+          reply_markup: keyboard.reply_markup,
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      ctx.reply("Sorry, an error occurred while fetching the referral data.");
+    }
+  } else if (realDuck) {
+    const url = `https://api.apiduck.xyz/statistics/count-partner-ref?ref_code[]=${ctx.message.text}`;
+    realDuck = false;
+    try {
+      const data = await fetch(url);
+      const result = await data.json();
+      const message = `👤 User_ref: ${result.data[0].ref_code}\n\n🃏 Total_Child: ${result.data[0].total_child}`;
+      ctx.replyWithPhoto(
+        {
+          url: "https://teletiengviet.com/wp-content/uploads/2023/11/Bo-suu-tap-99-anh-Khuc-Thi-Huong-khoe-vu-khung-goi-duc-kho-cuong-4.png",
         },
         {
           caption: message,
