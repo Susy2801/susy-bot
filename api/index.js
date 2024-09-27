@@ -19,8 +19,9 @@ const keyboard = {
         { text: "DuckCoop 🦆", callback_data: "duckcoopAll" },
         { text: "Duck by Date 🦆", callback_data: "duckcoop" },
       ],
-      [{ text: "Pirate Frenzy 🐳", callback_data: "frenzy" }],
+      [{ text: "Nature Duck 🍃 ", callback_data: "duckcoopNature" }],
       [{ text: "🔞 Duck for real 🔞", callback_data: "realDuck" }],
+      [{ text: "Pirate Frenzy 🐳", callback_data: "frenzy" }],
     ],
   },
 };
@@ -74,6 +75,34 @@ bot.start((ctx) => {
 });
 
 // Xử lý các yêu cầu referral
+const handleNature = async (ctx, url, loadingMessage, Date) => {
+  try {
+    const response = await axios.get(url);
+    const data = response.data.data;
+
+    const message = `From ${Date.fromDate} to ${Date.toDate}\n\nTotal_Nature_Ref: ${data.total_ref}`;
+
+    ctx.deleteMessage(loadingMessage.message_id); // Xóa tin nhắn "Loading..."
+    ctx.replyWithPhoto(
+      {
+        url: "https://lh5.googleusercontent.com/proxy/CXarQ2ENmcaFlVxzmveQw2afz-8v0JQ9ekJ59QLwR7wM16P2LpJCaXHdL11kP9Pyx2miKyziegmfT6XLloaxo4XzcJb2obLoHjx_mEiHotJFzjYT",
+      },
+      {
+        caption: message,
+        reply_markup: keyboard.reply_markup,
+      }
+    );
+    // Reset trạng thái sau khi xử lý xong
+    resetCurrentRequest();
+  } catch (error) {
+    console.log(error);
+    ctx.deleteMessage(loadingMessage.message_id);
+    ctx.reply("Sorry, an error occurred while fetching the referral data.");
+    resetCurrentRequest();
+  }
+};
+
+// Xử lý các yêu cầu referral
 const handleReferral = async (ctx, url, loadingMessage, Date) => {
   try {
     const response = await axios.get(url);
@@ -93,7 +122,7 @@ const handleReferral = async (ctx, url, loadingMessage, Date) => {
         ctx.deleteMessage(loadingMessage.message_id); // Xóa tin nhắn "Loading..."
         ctx.replyWithPhoto(
           {
-            url: "https://images.alphacoders.com/134/thumb-1920-1345286.png",
+            url: "https://nudevn.com/wp-content/uploads/2024/07/veronica-lucifer_0029-1-FILEminimizer.jpg",
           },
           {
             caption: message,
@@ -124,6 +153,7 @@ let duckcoopAll = false;
 let duckcoopByDate = false;
 let frenzy = false;
 let realDuck = false;
+let duckcoopNature = false;
 
 // Hành động tương ứng với mỗi lựa chọn
 bot.action("duckcoopAll", (ctx) => {
@@ -148,6 +178,14 @@ bot.action("realDuck", (ctx) => {
   duckcoopByDate = false;
   duckcoopAll = false;
   realDuck = true;
+});
+bot.action("duckcoopNature", (ctx) => {
+  handleActions("Nature Duck", ctx);
+  frenzy = false;
+  duckcoopByDate = false;
+  duckcoopAll = false;
+  realDuck = false;
+  duckcoopNature = true;
 });
 
 // Lệnh reset để hủy yêu cầu đang nhập dở
@@ -269,6 +307,48 @@ bot.on("text", async (ctx) => {
     } catch (error) {
       console.log(error);
       ctx.reply("Sorry, an error occurred while fetching the referral data.");
+    }
+  } else if (duckcoopNature) {
+    if (!currentRequest.referralCode) {
+      currentRequest.referralCode = input;
+      ctx.reply("Please enter the start date (fromDate) in format dd/mm/yyyy:");
+    } else if (!currentRequest.fromDate) {
+      if (!isValidDate(input)) {
+        return ctx.reply(
+          "Invalid date format! Please enter the start date in format dd/mm/yyyy:"
+        );
+      }
+      currentRequest.fromDate = input;
+      ctx.reply("Please enter the end date (toDate) in format dd/mm/yyyy:");
+    } else if (!currentRequest.toDate) {
+      if (!isValidDate(input)) {
+        return ctx.reply(
+          "Invalid date format! Please enter the end date in format dd/mm/yyyy:"
+        );
+      }
+      currentRequest.toDate = input;
+
+      // Chuyển đổi định dạng ngày giờ sang ISO UTC
+      const fromDateTime = convertToISODateTime(
+        currentRequest.fromDate,
+        "00:00"
+      ); // Bắt đầu là 00:00
+      const toDateTime = convertToISODateTime(currentRequest.toDate, "23:59"); // Kết thúc là 23:59
+      const Date = {
+        fromDate: currentRequest.fromDate,
+        toDate: currentRequest.toDate,
+      };
+
+      const url = `https://api.apiduck.xyz/user/get-ref-count?ref_code[]=&fromDate=${fromDateTime}&toDate=${toDateTime}`;
+
+      // Gửi tin nhắn "Loading..." trước khi gửi API đi
+      const loadingMessage = await ctx.reply("Loading, please wait...");
+
+      // Thêm trạng thái typing (tùy chọn)
+      await ctx.telegram.sendChatAction(ctx.chat.id, "typing");
+
+      // Gửi API và xử lý kết quả
+      handleNature(ctx, url, loadingMessage, Date);
     }
   }
 });
