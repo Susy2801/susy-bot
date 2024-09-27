@@ -7,7 +7,8 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const botToken = process.env.BOT_TOKEN;
+// const botToken = process.env.BOT_TOKEN;
+const botToken = "6333064218:AAGDsqP8nsHJMDjS7H4B_AIxFZCFfpQVPww";
 const bot = new Telegraf(botToken);
 console.log("Bot is running...");
 
@@ -80,7 +81,7 @@ const handleNature = async (ctx, url, loadingMessage, Date) => {
     const response = await axios.get(url);
     const data = response.data.data;
 
-    const message = `From ${Date.fromDate} to ${Date.toDate}\n\nTotal_Nature_Ref: ${data.total_ref}`;
+    const message = `Nature Ducks 🍃\nFrom *_${Date.fromDate}_* to *_${Date.toDate}_*\n\nTotal Nature Ref: *${data.total_ref}*`;
 
     ctx.deleteMessage(loadingMessage.message_id); // Xóa tin nhắn "Loading..."
     ctx.replyWithPhoto(
@@ -90,6 +91,7 @@ const handleNature = async (ctx, url, loadingMessage, Date) => {
       {
         caption: message,
         reply_markup: keyboard.reply_markup,
+        parse_mode: "MarkdownV2",
       }
     );
     // Reset trạng thái sau khi xử lý xong
