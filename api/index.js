@@ -8,6 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const botToken = process.env.BOT_TOKEN;
+
 const bot = new Telegraf(botToken);
 console.log("Bot is running...");
 
@@ -22,6 +23,7 @@ const keyboard = {
       [{ text: "Nature Duck 🍃 ", callback_data: "duckcoopNature" }],
       [{ text: "🔞 Duck for real 🔞", callback_data: "realDuck" }],
       [{ text: "Pirate Frenzy 🐳", callback_data: "frenzy" }],
+      [{ text: "MonkeyPaw 🐵", callback_data: "monkeypaw" }],
     ],
   },
 };
@@ -142,19 +144,23 @@ const handleReferral = async (ctx, url, loadingMessage, Date) => {
     resetCurrentRequest();
   }
 };
-
-// Các hành động xử lý yêu cầu từ người dùng
-const handleActions = (type, ctx) => {
-  currentRequest.type = type;
-  ctx.reply(`Please enter the ${type} referral code:`);
-};
-
 // Xử lí theo case
 let duckcoopAll = false;
 let duckcoopByDate = false;
 let frenzy = false;
 let realDuck = false;
 let duckcoopNature = false;
+let monkeyPaw = false;
+
+// Các hành động xử lý yêu cầu từ người dùng
+const handleActions = (type, ctx) => {
+  currentRequest.type = type;
+  if (duckcoopNature) {
+    ctx.reply(`Send "ok" to continue`);
+  } else {
+    ctx.reply(`Please enter the ${type} referral code:`);
+  }
+};
 
 // Hành động tương ứng với mỗi lựa chọn
 bot.action("duckcoopAll", (ctx) => {
@@ -181,12 +187,21 @@ bot.action("realDuck", (ctx) => {
   realDuck = true;
 });
 bot.action("duckcoopNature", (ctx) => {
-  handleActions("Nature Duck", ctx);
   frenzy = false;
   duckcoopByDate = false;
   duckcoopAll = false;
   realDuck = false;
   duckcoopNature = true;
+  handleActions("Nature Duck", ctx);
+});
+bot.action("monkeypaw", (ctx) => {
+  frenzy = false;
+  duckcoopByDate = false;
+  duckcoopAll = false;
+  realDuck = false;
+  duckcoopNature = false;
+  monkeyPaw = true;
+  handleActions("MonkeyPaw", ctx);
 });
 
 // Lệnh reset để hủy yêu cầu đang nhập dở
@@ -351,10 +366,39 @@ bot.on("text", async (ctx) => {
       // Gửi API và xử lý kết quả
       handleNature(ctx, url, loadingMessage, Date);
     }
+  } else if (monkeyPaw) {
+    const url = `https://api.monkeypaw.xyz/user/get-ref-count?ref_code[]=${ctx.message.text}`;
+    monkeyPaw = false;
+    try {
+      const response = await fetch(url);
+      const datas = await response.json();
+      const data = datas.data[0];
+      if (!data || data.length === 0) {
+        return ctx.reply("No data found for the given referral code.");
+      }
+
+      // Sử dụng map để xử lý từng mục dữ liệu
+      data.map((item, index) => {
+        if (index === 0) {
+          const message = `👤 User_name: ${item.full_name}\n\n🃏 Total_Ref: ${item.total_ref}`;
+          ctx.replyWithPhoto(
+            {
+              url: "https://wallpapercg.com/media/ts_orig/25790.webp",
+            },
+            {
+              caption: message,
+              reply_markup: keyboard.reply_markup,
+            }
+          );
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      ctx.reply("Sorry, an error occurred while fetching the referral data.");
+    }
   }
 });
 
-// Khởi động server
 bot.launch();
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
